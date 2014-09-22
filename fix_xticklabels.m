@@ -87,6 +87,8 @@ for ii = 1:NTick
     auto_width(ht(ii),max_w);
 end
 
+
+
 %% squeeze axis if needed
 
 set(handle,'Units','pixels')
@@ -100,7 +102,23 @@ for ii = 1:NTick
     TickExt(ii,:) = get(ht(ii),'Extent');
 end
 
-needmove = -(Axpos(2) + min(TickExt(:,2)));
+
+xlabh = get(handle,'XLabel');
+
+minbottom = min(TickExt(:,2));
+if( ~isempty(xlabh) )
+    oldu = get(xlabh,'Units');
+    set(xlabh,'Units','pixels');
+    ext = get(xlabh,'Extent');
+    pos = get(xlabh,'Position');
+    pos(2) = minbottom - ext(4);
+    set(xlabh,'Position',pos);
+    ext = get(xlabh,'Extent');
+    minbottom = ext(2);
+    set(xlabh,'Units',oldu)
+end
+
+needmove = -(Axpos(2) + minbottom);
 
 if needmove>0;
     Axpos(2) = Axpos(2)+needmove+2;
